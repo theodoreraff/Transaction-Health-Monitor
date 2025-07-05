@@ -12,14 +12,9 @@ def load_transaction_data(file_path):
         print(f"An error occurred while loading data: {e}")
         return None
 
-def run_data_quality_checks(file_path):
+def run_data_quality_checks(df):
     """Runs a series of data quality checks on the transaction data."""
-    df = load_transaction_data(file_path)
-    if df is None:
-        return []
-
     issues_found = []
-    print(f"--- Running Data Quality Checks for {file_path} ---")
 
     # 1. Check for Missing Values in critical columns
     critical_columns = ['transaction_id', 'user_id', 'amount', 'transaction_type', 'timestamp']
@@ -57,15 +52,22 @@ def run_data_quality_checks(file_path):
 
 if __name__ == "__main__":
     raw_data_path = 'data/raw/transactions.csv'
-    all_issues = run_data_quality_checks(raw_data_path)
 
-    print("\n --- FINAL DATA QUALITY REPORT ---")
-    if all_issues:
-        print("\n!!! ISSUES DETECTED !!!")
-        for i, issue in enumerate(all_issues):
-            print(f"{i+1}. {issue}")
-        print(f"\n Total Issues found: {len(all_issues)}")
-        print("Please review the raw data and correct the identified issues.")
+    print(f"--- Starting Data Quality Check for: {raw_data_path} ---")
+    transactions_df = load_transaction_data(raw_data_path)
+
+    if transactions_df is None:
+        print("  Failed to load data. Exiting quality checks.")
     else:
-        print("\nAll primary data quality checks passed. Data looks good for further processing.!")
-    print("--- REPORT END ---")
+        all_issues = run_data_quality_checks(transactions_df.copy())
+
+        print("\n --- FINAL DATA QUALITY REPORT ---")
+        if all_issues:
+            print("\n!!! ISSUES DETECTED !!!")
+            for i, issue in enumerate(all_issues):
+                print(f"{i+1}. {issue}")
+            print(f"\n Total Issues found: {len(all_issues)}")
+            print("Please review the raw data and correct the identified issues.")
+        else:
+            print("\nAll primary data quality checks passed. Data looks good for further processing.!")
+        print("--- REPORT END ---")
