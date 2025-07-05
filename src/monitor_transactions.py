@@ -59,10 +59,13 @@ if __name__ == "__main__":
     raw_data_path = 'data/raw/transactions.csv'
     all_issues = run_data_quality_checks(raw_data_path)
 
+    print("\n --- FINAL DATA QUALITY REPORT ---")
     if all_issues:
-        print("\n!!! DATA QUALITY ISSUES DETECTED !!!")
-        for issue in all_issues:
-            print(f"- {issue}")
+        print("\n!!! ISSUES DETECTED !!!")
+        for i, issue in enumerate(all_issues):
+            print(f"{i+1}. {issue}")
+        print(f"\n Total Issues found: {len(all_issues)}")
+        print("Please review the raw data and correct the identified issues.")
     else:
-        print("\nAll primary data quality checks passed. Data looks good!")
-    print("--- All Checks Complete ---")
+        print("\nAll primary data quality checks passed. Data looks good for further processing.!")
+    print("--- REPORT END ---")
