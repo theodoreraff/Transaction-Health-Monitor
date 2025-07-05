@@ -4,9 +4,6 @@ def load_transaction_data(file_path):
     """Loads transaction data from a CSV file."""
     try:
         df = pd.read_csv(file_path)
-        # print(f"Successfully loaded {len(df)} rows from {file_path}")
-        # print("First 5 rows:")
-        # print(df.head())
         return df
     except FileNotFoundError:
         print(f"Error: File not found at {file_path}")
@@ -31,25 +28,17 @@ def run_data_quality_checks(file_path):
             issues_found.append(f"Missing values detected in column: '{col}'")
             print(f"  Issue: Missing values in '{col}'")
 
-    # Placeholder for future checks (akan diisi di commit berikutnya)
-    # if df['transaction_id'].duplicated().any():
-    #     issues_found.append("Duplicate transaction_id found.")
+    # 2. Check for Unique Transaction IDs
+    if 'transaction_id' in df.columns and df['transaction_id'].duplicated().any():
+        issues_found.append("Duplicate 'transaction_id' found.")
+        print("  Issue: Duplicate 'transaction_id' detected.")
 
-    # if (df['amount'] <= 0).any():
-    #     issues_found.append("Non-positive amount found.")
-
-    # valid_types = ['SEND', 'RECEIVE', 'TOPUP', 'TRANSFER', 'PAYMENT']
-    # if not df['transaction_type'].isin(valid_types).all():
-    #     issues_found.append("Invalid transaction_type found.")
-
-    print("--- Missing values check complete ---")
+    print("--- Unique transaction ID check complete ---")
 
     return issues_found
 
 if __name__ == "__main__":
-    # Path to your raw transactions data
-    raw_data_path = '../data/raw/transactions.csv'
-
+    raw_data_path = 'data/raw/transactions.csv'
     all_issues = run_data_quality_checks(raw_data_path)
 
     if all_issues:
@@ -58,4 +47,4 @@ if __name__ == "__main__":
             print(f"- {issue}")
     else:
         print("\nAll primary data quality checks passed. Data looks good!")
-    print("--- Checks Complete ---")
+    print("--- All Checks Complete ---")
