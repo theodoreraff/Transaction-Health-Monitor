@@ -44,7 +44,14 @@ def run_data_quality_checks(file_path):
             issues_found.append("Non-numerical 'amount' values detected.")
             print("  Issue: Non-numerical 'amount' values detected (e.g., 'lima puluh ribu').")
 
-    print("--- Positive amount check complete ---")
+    # 4. Check for valid Transaction Types
+    if 'transaction_type' in df.columns:
+        valid_types = ['SEND', 'RECEIVE', 'TOPUP', 'TRANSFER', 'PAYMENT', 'BILL_PAYMENT']
+        if not df['transaction_type'].isin(valid_types).all():
+            issues_found.append("Invalid 'transaction_type' values found. Expected {', '.join(valid_types)}.")
+            print("  Issue: Invalid 'transaction_type' values found.")
+
+    print("--- Valid transactions type check complete ---")
 
     return issues_found
 
