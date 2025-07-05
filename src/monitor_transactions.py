@@ -33,7 +33,18 @@ def run_data_quality_checks(file_path):
         issues_found.append("Duplicate 'transaction_id' found.")
         print("  Issue: Duplicate 'transaction_id' detected.")
 
-    print("--- Unique transaction ID check complete ---")
+    # 3. Check for Positive Amount
+    if 'amount' in df.columns:
+        # Ensure 'amount' is numeric for comparison, errors will turn non-numeric into NaN
+        df['amount_numeric'] = pd.to_numeric(df['amount'], errors='coerce')
+        if (df['amount_numeric'] <= 0).any():
+            issues_found.append("Non-positive 'amount' found (value <= 0).")
+            print("  Issue: Non-positive 'amount' detected.")
+        if df['amount_numeric'].isnull().any() and df['amount'].dtype == 'object':
+            issues_found.append("Non-numerical 'amount' values detected.")
+            print("  Issue: Non-numerical 'amount' values detected (e.g., 'lima puluh ribu').")
+
+    print("--- Positive amount check complete ---")
 
     return issues_found
 
