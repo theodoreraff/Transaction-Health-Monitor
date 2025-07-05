@@ -1,0 +1,8 @@
+# Python
+__pycache__/
+.venv/
+*.pyc
+
+# Data & Logs
+*.csv # Untuk mengabaikan file CSV output
+*.log # Untuk mengabaikan file log
